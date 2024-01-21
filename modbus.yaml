@@ -1,0 +1,896 @@
+#################################################################
+## Modbus
+#################################################################
+# From https://community.home-assistant.io/t/saj-solar-inverter/111932
+      ##########################################################
+      ## SAJ converter
+      ##########################################################
+# 0x3651 = 13905
+
+  - name: SAJ
+    close_comm_on_error: true
+    delay: 5
+    type: tcp
+    timeout: 5
+    host: 192.168.0.32
+    port: 502
+    sensors:
+      - name: display_board_error_message
+        slave: 0
+        address: 16389 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        scan_interval: 10
+      - name: display_controller_error_message
+        slave: 0
+        address: 16391 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        scan_interval: 10
+      - name: display_controller_error_message2
+        slave: 0
+        address: 16393 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        scan_interval: 10
+      - name: error_message_controller
+        slave: 0
+        address: 16395 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        scan_interval: 10
+      - name: error_message_controller2
+        slave: 0
+        address: 16397 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        scan_interval: 10 
+      - name: Inverter_working_mode
+        slave: 0
+        address: 16388 
+        count: 1
+        scale: 1
+        precision: 0
+        data_type: uint16
+        scan_interval: 1
+      - name: Grid_phase_voltage
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16433 
+        count: 1
+        scale: 1
+        precision: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      # Following 3 does not match Smart meter I
+      - name: Grid_Phase_current
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16434 
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: Grid_Frequency
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 16435 
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: frequency
+        scan_interval: 1
+      - name: a16436FIXME
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16436 
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: a16440FIXME
+        unit_of_measurement: "?"
+        slave: 0
+        address: 16440 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        #device_class: current
+        scan_interval: 1
+
+      - name: Battery_voltage
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16489 
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Battery_current
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16490 
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: int16
+        device_class: current
+      - name: Battery_powerFIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16493 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Battery_temperature
+      # Was wrong address
+        unit_of_measurement: "C°"
+        slave: 0
+        address: 16494 
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: int16
+        scan_interval: 1
+        device_class: temperature
+      - name: Battery_SOC
+        unit_of_measurement: "%"
+        slave: 0
+        address: 16495 
+        count: 1
+        precision: 0
+        scale: 0.01
+        data_type: uint16
+        device_class: battery
+        scan_interval: 1
+      - name: Battery_direction
+        slave: 0
+        address: 16534 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        scan_interval: 1
+      - name: GridconsumptionFIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16538 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: PVconsumptiontohouseFIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16537 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: GridfeedinfromPV
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16539 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Gridfeedinfrombattery
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16540 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: BatconsumptiontohouseFIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16541 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: BatchargingfromPV
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16542 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Batchargingfromgrid
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16543 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Systemtotalloadpower
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16544 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Gridtotalpower
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16545 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+
+      - name: PVtotalpower
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16549 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: Batterytotalpower
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16550
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+
+      - name: GridtotalpowerFIXME
+      # This seems to be Batterytotalpower, changed to 16551
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16551
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: a16555FIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16555
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+
+      - name: Today_pvenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16575 
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_pvenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16577 
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Year_pvenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16579 
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Total_pvenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16581 
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Today_batenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16583
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_batenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16585
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: year_batenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16587
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: total_batenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16589
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: totay_batdischargeenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16591
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: month_batdischargeenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16593
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: year_batdischargeenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16595
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: total_batdischargeenergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16597
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: today_pvconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16639
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_pvconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16641
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: Year_pvconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16643
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: Total_pvconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16645
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: Today_gridconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16647
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_gridconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16649
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: year_gridconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16651
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: total_gridconsumed_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16653
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: Today_gridfeedinfromPV_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16655
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_gridfeedinfromPV_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16657
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: year_gridfeedinfromPV_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16659
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: total_gridfeedinfromPV_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16661
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: Today_Totalload_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16607
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+        state_class: total_increasing
+      - name: Month_Totalload_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16609
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: year_Totalload_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16611
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: uint32
+        device_class: energy
+        scan_interval: 100
+      - name: total_Totalload_energy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16613
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+
+
+# 0x3606 = 13830 start of charge/discharge times?
+# 366f, 3639, 36,47
+# 3a03 = 14851, 3a10 3aa0 32bit
+#timing reg 5947 = 23:59 (first byte hour, second byte minutes)
+# 23:59 = 1439 minutes = 86340 s (23:59:59 = 86399 s)
+# 768 =0x300 = 03:00 =  Firstbyte hour, second byte minutes
+# 1595 = 0x63B = 06:59 =
+# 32555 = 0x7F2B 0x7F = bitmask for 7 days? 0x2B=43 = 43*100 W?
+# 5120 20:00?
+# 5947 23:59
+# 32517 = 0x7F05 05 = 5*100 = 500W
+# 1792 07:00
+# 2107 08:59
+# 32513 = 0x7F01 01 =1*100 = 100W
+# 0
+# 571 = 0x23b 02:59
+# 32512 = 0W
+
+# C4 03:00-06:59, 4300W allweek
+# C3 20:00-23:59 500W all days
+# C2 07:00-08:59 100W
+# C1 00:00-02:59 0W
+
+# a13851
+# D3 14:00-15:59 500W  3584 =0xE00 = 14:00, 3899
+# D2 09:00-13:59 0W
+# D1 16:00-19:59 1500W
+      - name: CXXunknown0x3600
+        unit_of_measurement: "?"
+        slave: 0
+        address: 13824
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: time
+        scan_interval: 100
+# I Tidsdelningsläge: Self consumption        
+# 13828: 15        
+# 13829: 7
+# when 
+      - name: C0start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13830
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: time
+        scan_interval: 100
+
+      - name: C0end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13831
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C0days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13832
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: C1start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13833
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: time
+        scan_interval: 100
+
+      - name: C1end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13834
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C1days_and_power
+        unit_of_measurement: "0xDFPC"      
+        slave: 0
+        address: 13835
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: C2start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13836
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C2end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13837
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C2days_and_power
+        unit_of_measurement: "0xDFPC"      
+        slave: 0
+        address: 13838
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: C3start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13839
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: C4start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13842
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C5start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13845
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: C6start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13848
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: D1start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13851
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: D2start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13854
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: D3start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13857
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: D4start
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13860
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: DXend
+        #unit_of_measurement: "h.m"
+        slave: 0
+        address: 13870
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+      - name: a0x3a03_14851
+        #unit_of_measurement: "h.m"
+        slave: 0
+        address: 14851
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: a0x3a03_14851_end
+        #unit_of_measurement: "h.m"
+        slave: 0
+        address: 14860
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+
+
+      - name: a0x3651_13905
+        #unit_of_measurement: "h.m"
+        slave: 0
+        address: 13905
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
+      - name: a0x3651_13905_end
+        #unit_of_measurement: "h.m"
+        slave: 0
+        address: 13915
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        scan_interval: 100
