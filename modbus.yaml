@@ -6,7 +6,8 @@
       ## SAJ converter
       ##########################################################
 # 0x3651 = 13905
-
+# 0x4000 = 16384 - realtime
+# 0xe468 = 58472
   - name: SAJ
     close_comm_on_error: true
     delay: 5
@@ -15,6 +16,64 @@
     host: 192.168.0.32
     port: 502
     sensors:
+# From AS1 doc - does not work on H2
+#      # 0x3371, 1=Automatic Scheduling mode, 2=Time Of Use mode, 3 = Backup mode
+#      - name: ACC_UserMode
+#        slave: 0
+#        address: 13169 
+#        count: 1
+#        scale: 1
+#        precision: 0
+#        data_type: uint16
+#        scan_interval: 1
+#      # 0x3600, 1=Automatic Scheduling mode, 2=Time Of Use mode, 3 = Backup mode
+#      - name: GridChargeEnable
+#        slave: 0
+#        address: 13824 
+#        count: 1
+#        scale: 1
+#        precision: 0
+#        data_type: uint16
+#        scan_interval: 1
+#      - name: GridDischargeEnable
+#        slave: 0
+#        address: 13825
+#        count: 1
+#        scale: 1
+#        precision: 0
+#        data_type: uint16
+#        scan_interval: 1
+
+# -----------------------------
+
+      - name: InverterDate
+        unit_of_measurement: "0xYYYYMMDD"
+        slave: 0
+        address: 16384 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        device_class: time
+        scan_interval: 10
+      - name: InverterTime
+        unit_of_measurement: "0xHHMMSSxx"
+        slave: 0
+        address: 16386 
+        count: 2
+        scale: 1
+        precision: 0
+        data_type: uint32
+        device_class: time
+        scan_interval: 10
+      - name: Inverter_working_mode
+        slave: 0
+        address: 16388 
+        count: 1
+        scale: 1
+        precision: 0
+        data_type: uint16
+        scan_interval: 1
       - name: display_board_error_message
         slave: 0
         address: 16389 
@@ -55,14 +114,62 @@
         precision: 0
         data_type: uint32
         scan_interval: 10 
-      - name: Inverter_working_mode
-        slave: 0
-        address: 16388 
-        count: 1
-        scale: 1
-        precision: 0
-        data_type: uint16
-        scan_interval: 1
+
+# 0x4031 = 16433
+#4031H 1 RGridVolt Uint16 -1 V R R phase voltage
+#4032H 1 RGridCurr Int16 -2 A R R phase current
+#4033H 1 RGridFreq Uint16 -2 Hz R R phase frequency
+#4034H 1 RGridDCI Int16 0 mA R R phase DC component of grid
+#4035H 1 RGridPowerWatt Int16 0 W R R phase grid active power
+#4036H 1 RGridPowerVA Uint16 0 W R Rphase grid reactive power
+#4037H 1 RGridPowerPF Int16 -3 R R phase grid power factor
+#4046H 1 RInvVolt Uint16 -1 V R R phase Inversion voltage
+#4047H 1 RInvCurr Int16 -2 A R R phase Inversioncurrent
+#4048H 1 RInvFreq Uint16 -2 Hz R R inv frequency 
+#4049H 1 RInvPowerWatt Int16 0 W R R inv active power 
+#404AH 1 RInvPowerVA Uint16 0 VA R R inv reactive power 
+#4055H 1 ROutVolt Uint16 -1 V R R export voltage 
+#4056H 1 ROutCurr Uint16 -2 A R R export current 
+#4057H 1 ROutFreq Uint16 -2 Hz R R export frequency 
+#4058H 1 ROutDVI Int16 0 mV R RDC component of output voltage 
+#4059H 1 ROutPowerWatt Uint16 0 W R R output active power 
+#405AH 1 ROutPowerVA Uint16 0 VA R R output apparent power 
+# as 4055-405A for phase2 and phase 3
+
+#4067H 1 BusVoltMaster Uint16 -1 V R Mast BUS voltage 
+#4068H 1 BusVoltSlave Uint16 -1 V R Slave BUS voltage 
+#4069H 1 BatVolt Uint16 -1 V R Battery voltage 
+#406AH 1 BatCurr Int16 -2 A R Battery current 
+#406DH 1 BatPower Int16 0 W R Battery power 
+#406EH 1 BatTempC Int16 -1 ℃ R Battery temperature 
+#406FH 1 BatEnergyPercent Uint16 -2 % R Battery SOC 
+#4095H 1 PV_direction Uint16 0 R PV direction of energy flow 
+#4096H 1 Battery_direction int16 0 R battery energy flow direction 
+#4097H 1 Grid_direction int16 0 R Grid energy flow direction 
+#4098H 1 OutPut_direction Uint16 0 R Output to load energy flow direction 
+#4099H 1 PVConsumpWatt Int16 0 W R Power flow from PV to load 
+#409AH 1 GridConsumpWatt Int16 0 W R Power flowing from the grid to the load 
+#409BH 1 GridFeedInPVWatt Int16 0 W R Power flow from PV to grid 
+#409CH 1 GridFeedInBatWatt Int16 0 W R Power flow from battery to grid 
+#409DH 1 BatConsumpWatt Int16 0 W R Power flow from battery to load 
+#409EH 1 BatChgPVWatt Int16 0 W R PV charging power to battery 
+#409FH 1 BatChgGridWatt Int16 0 W R Grid charging power to battery 
+#40A0H 1 SysTotalLoadWatt Int16 0 W R Total system load power consumption
+
+#40A1H 1 CT_GridPowerWatt int16 0 W R CT grid active power 
+#40A2H 1 CT_GridPowerVA int16 0 VA R CT grid apparent power 
+#40A3H 1 CT_PVPowerWatt int16 0 W R CT PV active power 
+#40A4H 1 CT_PVPowerVA int16 0 VA R CT PV apparent power 
+#40A5H 1 TotalPVPower Int16 0 W R PV total power 
+#40A6H 1 TotalBatteryPower Int16 0 W R Total battery power 
+#40A7H 1 TotalGridPowerWatt Int16 0 W R The total active power of the grid 
+#40A8H 1 TotalGridPowerVA Int16 0 VA R The total apparent power of the grid 
+#40A9H 1 TotalInvPowerWatt Int16 0 W R Inverter total active power 
+#40AAH 1 TotalInvPowerVA Int16 0 VA R Inverter total apparent power 
+#40ABH 1 BackupTotalLoadPowerWatt Uint16 0 W R Backup Total load active power 
+#40ACH 1 BackupTotalLoadPowerVA Uint16 0 VA R Backup Total load apparent power 
+#40ADH 1 BatChgPowerLimit Int16 0 W R PV Charging limit
+
       - name: Grid_phase_voltage
         unit_of_measurement: "V"
         slave: 0
@@ -94,8 +201,8 @@
         data_type: int16
         device_class: frequency
         scan_interval: 1
-      - name: a16436FIXME
-        unit_of_measurement: "A"
+      - name: GridDCI
+        unit_of_measurement: "mA"
         slave: 0
         address: 16436 
         count: 1
@@ -104,16 +211,217 @@
         data_type: int16
         device_class: current
         scan_interval: 1
-      - name: a16440FIXME
-        unit_of_measurement: "?"
+      - name: GridPowerWatt
+        unit_of_measurement: "W"
         slave: 0
-        address: 16440 
+        address: 16437
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: GridPowerVA
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16438
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+
+      #0x4055
+      - name: Grid1OutVolt
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16469 
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid1OutCurrent
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16470 
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid1OutFrequency
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 16471
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: frequency
+        scan_interval: 1
+      # RDC  
+      - name: Grid1OutDVI
+        unit_of_measurement: "mV"
+        slave: 0
+        address: 16472
         count: 1
         precision: 0
         scale: 1
-        data_type: int16
-        #device_class: current
+        data_type: uint16
+        device_class: voltage
         scan_interval: 1
+
+      - name: Grid1OutPowerWatt
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16473
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: Grid1OutPowerVA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 16474
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      # 16475 0x405B- unknown, but appears to be as above but for the other phases
+      - name: Grid2OutVolt
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16475
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid2OutCurrent
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16476 
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid2OutFrequency
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 16477
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: frequency
+        scan_interval: 1
+      # RDC  
+      - name: Grid2OutDVI
+        unit_of_measurement: "mV"
+        slave: 0
+        address: 16478
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+
+      - name: Grid2OutPowerWatt
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16479
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: Grid2OutPowerVA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 16480
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+
+      - name: Grid3OutVolt
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16481
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid3OutCurrent
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16482
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Grid3OutFrequency
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 16483
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: frequency
+        scan_interval: 1
+      # RDC  
+      - name: Grid3OutDVI
+        unit_of_measurement: "mV"
+        slave: 0
+        address: 16484
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+
+      - name: Grid3OutPowerWatt
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16485
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: Grid3OutPowerVA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 16486
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+
 
       - name: Battery_voltage
         unit_of_measurement: "V"
@@ -134,7 +442,7 @@
         scale: 1
         data_type: int16
         device_class: current
-      - name: Battery_powerFIXME
+      - name: Battery_power
         unit_of_measurement: "W"
         slave: 0
         address: 16493 
@@ -146,7 +454,8 @@
         scan_interval: 1
       - name: Battery_temperature
       # Was wrong address
-        unit_of_measurement: "C°"
+      #"C°"
+        unit_of_measurement: "C"
         slave: 0
         address: 16494 
         count: 1
@@ -165,6 +474,15 @@
         data_type: uint16
         device_class: battery
         scan_interval: 1
+
+      - name: PV_direction
+        slave: 0
+        address: 16533 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        scan_interval: 1
       - name: Battery_direction
         slave: 0
         address: 16534 
@@ -172,6 +490,34 @@
         precision: 0
         scale: 1
         data_type: int16
+        scan_interval: 1
+      - name: Grid_direction
+        slave: 0
+        address: 16535
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        scan_interval: 1
+      - name: Inverter_direction
+        slave: 0
+        address: 16536
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        scan_interval: 1
+
+      # 0x4099
+      - name: PVconsumptiontohouseFIXME
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16537 
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
         scan_interval: 1
       - name: GridconsumptionFIXME
         unit_of_measurement: "W"
@@ -183,16 +529,7 @@
         data_type: int16
         device_class: power
         scan_interval: 1
-      - name: PVconsumptiontohouseFIXME
-        unit_of_measurement: "W"
-        slave: 0
-        address: 16537 
-        count: 1
-        precision: 0
-        scale: 1
-        data_type: int16
-        device_class: power
-        scan_interval: 1
+
       - name: GridfeedinfromPV
         unit_of_measurement: "W"
         slave: 0
@@ -285,8 +622,9 @@
         device_class: power
         scan_interval: 1
 
-      - name: GridtotalpowerFIXME
-      # This seems to be Batterytotalpower, changed to 16551
+      - name: BatteryToGridtotalpowerFIXME
+      # 0x40A7 16551 This seems to be difference between Battery_power and Batterytotalpower, changed to 16551
+      # 40A7H 1 TotalGridPowerWatt Int16 0 W R The total active power of the grid
         unit_of_measurement: "W"
         slave: 0
         address: 16551
@@ -296,14 +634,38 @@
         data_type: int16
         device_class: power
         scan_interval: 1
-      - name: a16555FIXME
+
+      # This seems to be Bat+PV power
+      - name: Invertertotalpower
+      # 40A9H 16553 1 TotalInvPowerWatt Int16 0 W R Inverter total active power
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16553
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+
+      - name: BackupTotalLoadPower
         unit_of_measurement: "W"
         slave: 0
         address: 16555
         count: 1
         precision: 0
         scale: 1
-        data_type: int16
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: BackupTotalLoadPowerVA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 16556
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
         device_class: power
         scan_interval: 1
 
@@ -372,7 +734,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: year_batenergy
+      - name: Year_batenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16587
@@ -382,7 +744,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: total_batenergy
+      - name: Total_batenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16589
@@ -392,7 +754,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: totay_batdischargeenergy
+      - name: Today_batdischargeenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16591
@@ -403,7 +765,7 @@
         device_class: energy
         scan_interval: 100
         state_class: total_increasing
-      - name: month_batdischargeenergy
+      - name: Month_batdischargeenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16593
@@ -413,7 +775,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: year_batdischargeenergy
+      - name: Year_batdischargeenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16595
@@ -423,7 +785,7 @@
         data_type: int32
         device_class: energy
         scan_interval: 100
-      - name: total_batdischargeenergy
+      - name: Total_batdischargeenergy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16597
@@ -433,7 +795,51 @@
         data_type: int32
         device_class: energy
         scan_interval: 100
-      - name: today_pvconsumed_energy
+
+      - name: Today_InvGenEnergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16599
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: Month_InvGenEnergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16601
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: Year_InvGenEnergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16603
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+      - name: Total_InvGenEnergy
+        unit_of_measurement: "kWh"
+        slave: 0
+        address: 16605
+        count: 2
+        precision: 0
+        scale: 0.01
+        data_type: int32
+        device_class: energy
+        scan_interval: 100
+
+
+
+      - name: Today_pvconsumed_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16639
@@ -495,7 +901,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: year_gridconsumed_energy
+      - name: Year_gridconsumed_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16651
@@ -505,7 +911,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: total_gridconsumed_energy
+      - name: Total_gridconsumed_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16653
@@ -536,7 +942,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: year_gridfeedinfromPV_energy
+      - name: Year_gridfeedinfromPV_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16659
@@ -546,7 +952,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: total_gridfeedinfromPV_energy
+      - name: Total_gridfeedinfromPV_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16661
@@ -577,7 +983,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: year_Totalload_energy
+      - name: Year_Totalload_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16611
@@ -587,7 +993,7 @@
         data_type: uint32
         device_class: energy
         scan_interval: 100
-      - name: total_Totalload_energy
+      - name: Total_Totalload_energy
         unit_of_measurement: "kWh"
         slave: 0
         address: 16613
@@ -597,6 +1003,29 @@
         data_type: int32
         device_class: energy
         scan_interval: 100
+
+#      - name: realtimedata
+#        #unit_of_measurement: "kWh"
+#        slave: 0
+#        address: 58472
+#        #count: 60
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: int16
+#        device_class: energy
+#        scan_interval: 100
+#      - name: realtimedata_end
+#        #unit_of_measurement: "kWh"
+#        slave: 0
+#        address: 58482
+##        count: 60
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: int16
+#        device_class: energy
+#       scan_interval: 100
 
 
 # 0x3606 = 13830 start of charge/discharge times?
@@ -626,23 +1055,23 @@
 # D3 14:00-15:59 500W  3584 =0xE00 = 14:00, 3899
 # D2 09:00-13:59 0W
 # D1 16:00-19:59 1500W
-      - name: CXXunknown0x3600
-        unit_of_measurement: "?"
-        slave: 0
-        address: 13824
-        count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
-        scale: 1
-        data_type: uint16
-        device_class: time
-        scan_interval: 100
+#      - name: CXXunknown0x3600
+#        unit_of_measurement: "?"
+#        slave: 0
+#        address: 13824
+#        count: 1
+#        precision: 0
+#        # convert minutes to hour
+#        #scale: 0.016666666
+#        scale: 1
+#        data_type: uint16
+#        device_class: time
+#        scan_interval: 100
 # I Tidsdelningsläge: Self consumption        
 # 13828: 15        
 # 13829: 7
 # when 
-      - name: C0start
+      - name: C0begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13830
@@ -652,7 +1081,7 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
-        device_class: time
+        device_class: schedule
         scan_interval: 100
 
       - name: C0end
@@ -665,6 +1094,7 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
       - name: C0days_and_power
         unit_of_measurement: "0xDFPC"
@@ -676,9 +1106,10 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: C1start
+      - name: C1begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13833
@@ -688,7 +1119,7 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
-        device_class: time
+        device_class: schedule
         scan_interval: 100
 
       - name: C1end
@@ -701,18 +1132,20 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
       - name: C1days_and_power
-        unit_of_measurement: "0xDFPC"      
+        unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13835
         count: 1
         precision: 0
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: C2start
+      - name: C2begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13836
@@ -722,6 +1155,7 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
       - name: C2end
         unit_of_measurement: "0xHHMM"
@@ -733,18 +1167,20 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
       - name: C2days_and_power
-        unit_of_measurement: "0xDFPC"      
+        unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13838
         count: 1
         precision: 0
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: C3start
+      - name: C3begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13839
@@ -754,9 +1190,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C3end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13840
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C3days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13841
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: C4start
+      - name: C4begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13842
@@ -766,8 +1225,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
-      - name: C5start
+      - name: C4end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13843
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C4days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13844
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
+      - name: C5begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13845
@@ -777,8 +1260,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
-      - name: C6start
+      - name: C5end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13846
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C5days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13847
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
+      - name: C6begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13848
@@ -788,9 +1295,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C6end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13849
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: C6days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13850
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: D1start
+      - name: D1begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13851
@@ -800,9 +1330,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D1end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13852
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D1days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13853
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: D2start
+      - name: D2begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13854
@@ -812,8 +1365,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
-      - name: D3start
+      - name: D2end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13855
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D2days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13856
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
+      - name: D3begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13857
@@ -823,8 +1400,32 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
         scan_interval: 100
-      - name: D4start
+      - name: D3end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13858
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D3days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13859
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
+      - name: D4begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13860
@@ -834,63 +1435,485 @@
         #scale: 0.016666666
         scale: 1
         data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D4end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13861
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D4days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13862
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D5begin
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13863
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D5end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13864
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D5days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13865
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D6begin
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13866
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D6end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13867
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D6days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13868
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
         scan_interval: 100
 
-      - name: DXend
-        #unit_of_measurement: "h.m"
-        slave: 0
-        address: 13870
-        count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
-        scale: 1
-        data_type: uint16
-        scan_interval: 100
 
-      - name: a0x3a03_14851
-        #unit_of_measurement: "h.m"
-        slave: 0
-        address: 14851
-        count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
-        scale: 1
-        data_type: uint16
-        scan_interval: 100
-      - name: a0x3a03_14851_end
-        #unit_of_measurement: "h.m"
-        slave: 0
-        address: 14860
-        count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
-        scale: 1
-        data_type: uint16
-        scan_interval: 100
+#      - name: a0x3a03_14851
+#        #unit_of_measurement: "h.m"
+#        slave: 0
+#        address: 14851
+#        count: 1
+#        precision: 0
+#        # convert minutes to hour
+#        #scale: 0.016666666
+#        scale: 1
+#        data_type: uint16
+#        scan_interval: 100
+#      - name: a0x3a03_14851_end
+#        #unit_of_measurement: "h.m"
+#        slave: 0
+#        address: 14860
+#        count: 1
+#        precision: 0
+#        # convert minutes to hour
+#        #scale: 0.016666666
+#        scale: 1
+#        data_type: uint16
+#        scan_interval: 100
 
 
-      - name: a0x3651_13905
-        #unit_of_measurement: "h.m"
+#Unknown
+# 80, 50 6000, 1800, 6000, 1800, 300, 300, 50, 0, 0
+#      - name: a0x3651_13905
+#        #unit_of_measurement: "h.m"
+#        slave: 0
+#        address: 13905
+#        count: 1
+#        precision: 0
+#        # convert minutes to hour
+#        #scale: 0.016666666
+#        scale: 1
+#        data_type: uint16
+#        scan_interval: 100
+#      - name: a0x3651_13905_end
+#        #unit_of_measurement: "h.m"
+#        slave: 0
+#        address: 13915
+#        count: 1
+#        precision: 0
+#        # convert minutes to hour
+#        #scale: 0.016666666
+#        scale: 1
+#        data_type: uint16
+#        scan_interval: 100
+
+# 0xA00C 40972 BAT1SOC
+#A00CH 1 Bat1SOC Uint16 -2 % R Bat1SOC
+#A00DH 1 Bat1SOH Uint16 -2 % R Bat1SOH
+#A00EH 1 Bat1Voltage Uint16 -1 V R Bat1Voltage
+#A00FH 1 Bat1Current int16 -2 A R Bat1Current
+#A010H 1 Bat1Temperature int16 -1 ℃ R Bat1Temperature
+#A011H 1 Bat1CycleNum Uint16 0 R Bat1CycleNum
+
+#A012H 1 Bat2SOC Uint16 -2 % R Bat2SOC
+#A013H 1 Bat2SOH Uint16 -2 % R Bat2SOH
+#A014H 1 Bat2Voltage Uint16 -1 V R Bat2Voltage
+#A015H 1 Bat2Current int16 -2 A R Bat2Current
+#A016H 1 Bat2Temperature int16 -1 ℃ R Bat2Temperature
+#A017H 1 Bat2CycleNum Uint16 0 R Bat2CycleNum
+
+#A018H 1 Bat3SOC Uint16 -2 % R Bat3SOC
+#A019H 1 Bat3SOH Uint16 -2 % R Bat3SOH
+#A01AH 1 Bat3Voltage Uint16 -1 V R Bat3Voltage
+#A01BH 1 Bat3Current int16 -2 A R Bat3Current
+#A01CH 1 Bat3Temperature int16 -1 ℃ R Bat3Temperature
+#A01DH 1 Bat3CycleNum Uint16 0 R Bat3CycleNum
+
+#A01EH 1 Bat4SOC Uint16 -2 % R Bat4SOC
+#A01FH 1 Bat4SOH Uint16 -2 % R Bat4SOH
+#A020H 1 Bat4Voltage Uint16 -1 V R Bat4Voltage
+#A021H 1 Bat4Current int16 -2 A R Bat4Current
+#A022H 1 Bat4Temperature int16 -1 ℃ R Bat4Temperature
+#A023H 1 Bat4CycleNum Uint16 0 R Bat4CycleNum
+
+#A024H 20 Reserve Uint16 0 R Reserv Bat5?
+      - name: Bat1SOC
+        unit_of_measurement: "%"
         slave: 0
-        address: 13905
+        address: 40972
         count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
+        precision: 2
         scale: 1
         data_type: uint16
-        scan_interval: 100
-      - name: a0x3651_13905_end
-        #unit_of_measurement: "h.m"
+        device_class: percentage
+        scan_interval: 1
+      - name: Bat1SOH
+        unit_of_measurement: "%"
         slave: 0
-        address: 13915
+        address: 40973
         count: 1
-        precision: 0
-        # convert minutes to hour
-        #scale: 0.016666666
+        precision: 2
         scale: 1
         data_type: uint16
-        scan_interval: 100
+        device_class: percentage
+        scan_interval: 1
+      - name: Bat1Voltage
+        unit_of_measurement: "V"
+        slave: 0
+        address: 40974
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: Bat1Current
+        unit_of_measurement: "A"
+        slave: 0
+        address: 40975
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: Bat1Temp
+        unit_of_measurement: "C"
+        slave: 0
+        address: 40976
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: int16
+        device_class: temperature
+        scan_interval: 1
+      - name: Bat1CycleNum
+        slave: 0
+        address: 40977
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: cycles
+        scan_interval: 1
+
+#      - name: Bat2SOC
+#        unit_of_measurement: "%"
+#        slave: 0
+#        address: 40978
+#        count: 1
+#        precision: 2
+#        scale: 1
+#        data_type: uint16
+#        device_class: percentage
+#        scan_interval: 1
+#      - name: Bat2SOH
+#        unit_of_measurement: "%"
+#        slave: 0
+#        address: 40979
+#        count: 1
+#        precision: 2
+#        scale: 1
+#        data_type: uint16
+#        device_class: percentage
+#        scan_interval: 1
+#      - name: Bat2Voltage
+#        unit_of_measurement: "V"
+#        slave: 0
+#        address: 40980
+#        count: 1
+#        precision: 1
+#        scale: 1
+#        data_type: uint16
+#        device_class: voltage
+#        scan_interval: 1
+#      - name: Bat2Current
+#        unit_of_measurement: "A"
+#        slave: 0
+#        address: 40981
+#        count: 1
+#        precision: 2
+#        scale: 1
+#        data_type: int16
+#        device_class: current
+#        scan_interval: 1
+#      - name: Bat2Temp
+#        unit_of_measurement: "C"
+#        slave: 0
+#        address: 40982
+#        count: 1
+#        precision: 1
+#        scale: 1
+#        data_type: int16
+#        device_class: temperature
+#        scan_interval: 1
+#      - name: Bat2CycleNum
+#        slave: 0
+#        address: 40983
+#        count: 1
+#        precision: 1
+#        scale: 1
+#        data_type: uint16
+#        device_class: cycles
+#        scan_interval: 1
+
+
+# 0xa03D 41021 Meter_A_Volt
+      - name: SM1_Status
+        slave: 0
+        address: 41020
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        scan_interval: 1
+
+      - name: SM1_V1
+        unit_of_measurement: "V"
+        slave: 0
+        address: 41021
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: SM1_I1
+        unit_of_measurement: "A"
+        slave: 0
+        address: 41022 
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: SM1_P1
+        unit_of_measurement: "W"
+        slave: 0
+        address: 41023
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_P1VA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 41024
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_PowerFactor1
+        slave: 0
+        address: 41025
+        count: 1
+        precision: 3
+        scale: 0
+        data_type: int16
+        scan_interval: 1
+      - name: SM1_F1
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 41026
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: frequency
+        scan_interval: 1
+
+
+      - name: SM1_V2
+        unit_of_measurement: "V"
+        slave: 0
+        address: 41027
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: SM1_I2
+        unit_of_measurement: "A"
+        slave: 0
+        address: 41028
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: SM1_P2
+        unit_of_measurement: "W"
+        slave: 0
+        address: 41029
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_P2VA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 41030
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_PowerFactor2
+        slave: 0
+        address: 41031
+        count: 1
+        precision: 3
+        scale: 0
+        data_type: int16
+        scan_interval: 1
+      - name: SM1_F2
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 41032
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: frequency
+        scan_interval: 1
+
+      - name: SM1_V3
+        unit_of_measurement: "V"
+        slave: 0
+        address: 41033
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: SM1_I3
+        unit_of_measurement: "A"
+        slave: 0
+        address: 41034 
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: current
+        scan_interval: 1
+      - name: SM1_P3
+        unit_of_measurement: "W"
+        slave: 0
+        address: 41035
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: int16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_P3VA
+        unit_of_measurement: "VA"
+        slave: 0
+        address: 41036
+        count: 1
+        precision: 0
+        scale: 0
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: SM1_PowerFactor3
+        slave: 0
+        address: 41037
+        count: 1
+        precision: 3
+        scale: 0
+        data_type: int16
+        scan_interval: 1
+      - name: SM1_F3
+        unit_of_measurement: "Hz"
+        slave: 0
+        address: 41038
+        count: 1
+        precision: 2
+        scale: 0
+        data_type: int16
+        device_class: frequency
+        scan_interval: 1
+
