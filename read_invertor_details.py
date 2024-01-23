@@ -5,13 +5,19 @@ import time
 
 try:
   import yaml
-except:
-  print("Try: pip install pyyaml")
+#  from pyyaml import yaml
+except Exception as exc:
+  print("Try: pip3 install pyyaml", exc)
+  exit(1)
 
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.constants import Endian
-from pymodbus.exceptions import ConnectionException
-from pymodbus.payload import BinaryPayloadDecoder
+try:  
+  from pymodbus.client.sync import ModbusTcpClient
+  from pymodbus.constants import Endian
+  from pymodbus.exceptions import ConnectionException
+  from pymodbus.payload import BinaryPayloadDecoder
+except Exception as exc:
+  print("Try: pip3 install pymodbus", exc)
+  exit(1)
 
 read_info = False
 
@@ -70,7 +76,7 @@ def read_regs(client):
                 unit=1, address=address, count=count)
             connected = True
         except ConnectionException as ex:
-            print(f'Connecting to device {args.host} failed!')
+            print("Connecting to device &s failed!" % (args.host))
             connected = False
 
         if connected:
@@ -216,7 +222,7 @@ for sensor in sensors:
             unit=1, address=address, count=count)
         connected = True
     except ConnectionException as ex:
-        print(f'Connecting to device {args.host} failed!')
+        print('Connecting to device %s failed!' % (args.host))
         connected = False
 
     if connected:
@@ -256,7 +262,7 @@ if read_info:
             unit=1, address=address, count=count)
         connected = True
     except ConnectionException as ex:
-        print(f'Connecting to device {args.host} failed!')
+        print('Connecting to device %s failed!' % (args.host))
         connected = False
 
     if connected:
