@@ -2,9 +2,12 @@
 ## Modbus
 #################################################################
 # From https://community.home-assistant.io/t/saj-solar-inverter/111932
+# Updated with regs from AS1Main control board doc.
+# along with some findings with my SAJ H2 10K-T2
       ##########################################################
       ## SAJ converter
       ##########################################################
+# 0x001D = 29 PV1Volt ?
 # 0x3651 = 13905
 # 0x4000 = 16384 - realtime
 # 0xe468 = 58472
@@ -45,6 +48,19 @@
 #        scan_interval: 1
 
 # -----------------------------
+
+# 0x001D = 29 PV1Volt does not return anything
+#      - name: PV1Volt
+#        unit_of_measurement: "V"
+#        slave: 0
+#        address: 29
+#        count: 1
+#        scale: 1
+#        precision: 1
+#        data_type: uint16
+#        device_class: voltage
+#        scan_interval: 10
+
 
       - name: InverterDate
         unit_of_measurement: "0xYYYYMMDD"
@@ -1035,7 +1051,7 @@
 # 23:59 = 1439 minutes = 86340 s (23:59:59 = 86399 s)
 # 768 =0x300 = 03:00 =  Firstbyte hour, second byte minutes
 # 1595 = 0x63B = 06:59 =
-# 32555 = 0x7F2B 0x7F = bitmask for 7 days? 0x2B=43 = 43*100 W?
+# 32555 = 0x7F2B 0x7F = bitmask for 7 days? 0x2B=43 = 43*100 W? 0x1=Monday, 0x02=Tuesday etc
 # 5120 20:00?
 # 5947 23:59
 # 32517 = 0x7F05 05 = 5*100 = 500W

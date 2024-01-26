@@ -33,6 +33,15 @@ parser.add_argument('--host', help="SAJ Inverter IP",
                     type=str, default='192.168.0.32', required=False)
 parser.add_argument('--port', help="SAJ Inverter Port",
                     type=int, default=502, required=False)
+parser.add_argument('--readcsv', help="Read theese many csv lines",
+                    type=int, default=read_num_lines, required=False)
+parser.add_argument('--list', action='store_true', help="Read sensors",
+                    default=False, required=False)
+parser.add_argument('--read', help="Read register(s) (reg1,reg2)",
+                    type=str, default='', required=False)
+parser.add_argument('--write', help="Write register(s) (reg=value,regs=value)",
+                    type=str, default='', required=False)
+
 
 args = parser.parse_args()
 
@@ -48,8 +57,16 @@ with open("modbus.yaml", "r") as stream:
 #        modbus = yaml.safe_load(stream)
 #    except yaml.YAMLError as exc:
 #        print(exc)
-
-
+read_reg = args.read
+write_reg = args.write
+if read_reg != '' or write_reg != '':
+    read_num_lines = 0
+else:
+    read_num_lines = args.readcsv
+if args.list:
+    print_csv = False
+    print_values = True
+    read_num_lines = 1
 #print(modbus)
 sensors = modbus[0]['sensors']
 #for s in sensors:
@@ -76,7 +93,7 @@ def read_regs(client):
                 unit=1, address=address, count=count)
             connected = True
         except ConnectionException as ex:
-            print("Connecting to device &s failed!" % (args.host))
+            print("Connecting to device %s failed!" % (args.host))
             connected = False
 
         if connected:
@@ -328,12 +345,42 @@ while linenbr < read_num_lines:
     datetimestr = dt.strftime("%Y-%m-%d %H:%M:%S")
     data = read_regs(client)
     data['DateTime'] = { 'v': datetimestr, 'u':''}
+
     if prevday != today:
         # New day - start with header
         linenbr = 0
         prevday = today        
     print_data(data)
-    time.sleep(8)
+    if linenbr < read_num_lines:
+        time.sleep(8)
+
+if read_reg != '':
+        regs = read_reg.split(',')
+        for reg in regs:
+            if reg in sensor_by_name:
+                sensor = sensor_by_name[reg]
+                chunk = {}
+                chunk['start'] = sensor['address']
+                chunk['count'] = sensor['count']
+                adress_chunks = [chunk]
+                data = read_regs(client)
+                for k in data:
+                    print(k, data[k]['v'], data[k]['u'])
+            else:
+                print("# Register",reg,"not found")
+
+if write_reg != '':
+        regs = write_reg.split(',')
+        for reg_value in regs:
+            [reg, value]=reg_value.split('=')
+            if reg in sensor_by_name:
+                sensor = sensor_by_name[reg]
+                value=int(value, base=0)
+                print("Write to", reg, value, sensor)
+                res =client.write_register(address = sensor['address'], value=value, unit = 1)
+                print(res)
+                #for k in data:
+                #    print(k, data[k]['v'], data[k]['u'])
 
 
 client.close()
