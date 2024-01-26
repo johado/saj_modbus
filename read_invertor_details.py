@@ -2,6 +2,7 @@ import argparse
 import json
 from datetime import datetime
 import time
+import sys
 
 try:
   import yaml
@@ -352,6 +353,8 @@ while linenbr < read_num_lines:
         prevday = today        
     print_data(data)
     if linenbr < read_num_lines:
+        if linenbr % 10 == 0:
+            sys.stdout.flush()
         time.sleep(8)
 
 if read_reg != '':
