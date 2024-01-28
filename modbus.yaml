@@ -491,6 +491,85 @@
         device_class: battery
         scan_interval: 1
 
+# Empiric study suggests this could be PV values
+#      - name: PV1x
+#        unit_of_measurement: "V"
+#        slave: 0
+#        address: 16496
+#        count: 1
+#        precision: 1
+#        scale: 0
+#        data_type: uint16
+#        device_class: voltage
+#        scan_interval: 1
+      - name: PV1Volt
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16497
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: PV1Current
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16498
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: current
+        scan_interval: 1
+      - name: PV1Power
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16499
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+      - name: PV2Volt
+        unit_of_measurement: "V"
+        slave: 0
+        address: 16500
+        count: 1
+        precision: 1
+        scale: 1
+        data_type: uint16
+        device_class: voltage
+        scan_interval: 1
+      - name: PV2Current
+        unit_of_measurement: "A"
+        slave: 0
+        address: 16501
+        count: 1
+        precision: 2
+        scale: 1
+        data_type: uint16
+        device_class: current
+        scan_interval: 1
+      - name: PV2Power
+        unit_of_measurement: "W"
+        slave: 0
+        address: 16502
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: power
+        scan_interval: 1
+# 16503 and on gives 0xFFFF and 0
+# 16525: 2313 (Voltage?)
+# 16528: 1184 (Watt?)
+# 16529: 2299 (Voltage?)
+# 16530:  401 (Watt?)
+# 16531: 2304 (Voltage?)
+# 16532: 1283 (Watt?)
+
       - name: PV_direction
         slave: 0
         address: 16533 

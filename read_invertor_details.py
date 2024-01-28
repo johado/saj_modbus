@@ -21,8 +21,12 @@ except Exception as exc:
   exit(1)
 
 read_info = False
+chunk_min_range = 16
+chunk_max_count = 100 # Snooping indicates a lot of read with 0x50 = 80
+chunk_extra_range = 0
 
 exclude_class = ['schedule']
+include_class = []  # All
 print_values = False
 #print_values = True
 print_csv = True
@@ -38,6 +42,12 @@ parser.add_argument('--readcsv', help="Read theese many csv lines",
                     type=int, default=read_num_lines, required=False)
 parser.add_argument('--list', action='store_true', help="Read sensors",
                     default=False, required=False)
+parser.add_argument('--include',  help="classes to include",
+                    type=str, default=None, required=False)
+parser.add_argument('--exclude',  help="classes to exclude",
+                    type=str, default='schedule', required=False)
+
+
 parser.add_argument('--read', help="Read register(s) (reg1,reg2)",
                     type=str, default='', required=False)
 parser.add_argument('--write', help="Write register(s) (reg=value,regs=value)",
@@ -58,6 +68,9 @@ with open("modbus.yaml", "r") as stream:
 #        modbus = yaml.safe_load(stream)
 #    except yaml.YAMLError as exc:
 #        print(exc)
+if args.include is not None:
+    include_class = args.include.split(',')
+exclude_class = args.exclude.split(',')
 read_reg = args.read
 write_reg = args.write
 if read_reg != '' or write_reg != '':
@@ -73,6 +86,22 @@ sensors = modbus[0]['sensors']
 #for s in sensors:
 #    print(s['name'], s['address'])
 
+sensor_by_addr = {}
+sensor_by_name = {}
+sensor_classes = {}
+for sensor in sensors:
+    address = sensor['address']
+    sensor_by_addr[address] = sensor
+    sensor_by_name[sensor['name']] = sensor
+    if 'device_class' in sensor:
+        sensor_classes[sensor['device_class']] = sensor['device_class']
+
+if len(include_class) == 0:
+    include_class = list(sensor_classes.keys())
+    include_class = [item for item in sensor_classes if item not in exclude_class ]
+
+#print('include:', include_class)
+
 connected = False
 client = ModbusTcpClient(host=args.host, port=args.port, timeout=3)
 client.connect()
@@ -80,6 +109,7 @@ client.connect()
 def read_regs(client):
     global sensors
     global adress_chunks
+    global connected
     #print("Fetching chunks")
     data = {}
 
@@ -152,8 +182,9 @@ def read_regs(client):
                         value = "%02i:%02i:%02i.%03i" % ( (value >> 24) & 0xFF, (value >> 16) & 0xFF, (value >> 8) & 255, value & 0xFF)
                         unit = ''
                     data[sensor['name']] = { 'v': value, 'u':unit}
-                
-                    #print(sensor['name'], value, unit)
+                    
+                    if print_values:
+                        print(sensor['name'], value, unit)
                     address += sensor['count']
     return data
 
@@ -190,7 +221,7 @@ def print_data(data):
                     value = data[name]['v']
                     unit = data[name]['u']
                     
-                    if not ('device_class' in sensor and sensor['device_class'] in exclude_class):
+                    if not ('device_class' in sensor) or 'device_class' in sensor and sensor['device_class'] in include_class:
                         if print_values:
                             print(sensor['name'], value, unit) 
                         if unit != '':
@@ -199,7 +230,8 @@ def print_data(data):
                             csvheader += name + ';'
                         csvvalue += value + ';'
                 else:
-                    print(name, ' not in data?')
+                    if not print_csv:
+                        print(name, ' not in data?')
     elif orderby == 'name':
         names = list(sensor_by_name.keys())
         names.sort()
@@ -209,7 +241,8 @@ def print_data(data):
                 value = data[name]['v']
                 unit = data[name]['u']
 
-                if not (sensor['device_class'] in exclude_class):
+                if not ('device_class' in sensor) or 'device_class' in sensor and sensor['device_class'] in include_class:
+                #if sensor['device_class'] in include_class:
                     if print_values:                
                         print(sensor['name'], value, unit)                
                     if unit != '':
@@ -218,7 +251,8 @@ def print_data(data):
                         csvheader += name + ';'
                     csvvalue += value + ';'
             else:
-                print(name, ' not in data?')
+                if not print_csv:
+                    print(name, ' not in data?')
     if print_csv:
         if linenbr == 0:
             print(csvheader)
@@ -307,12 +341,6 @@ if read_info:
             json_data = json.dumps(data)
             #print(json_data)
 
-sensor_by_addr = {}
-sensor_by_name = {}
-for sensor in sensors:
-    address = sensor['address']
-    sensor_by_addr[address] = sensor
-    sensor_by_name[sensor['name']] = sensor
 
 adresses = list(sensor_by_addr.keys())
 adresses.sort()
@@ -323,15 +351,22 @@ chunk = {}
 chunk['start'] = adresses[0]
 chunk['count'] = sensor_by_addr[adresses[0]]['count']
 for a in adresses:
-  sensor = sensor_by_addr[a]
-  if (sensor['address']+sensor['count']) - (chunk['start'] + chunk['count']) < 16:
-      # increase chunk
-      chunk['count'] = sensor['address']+sensor['count'] - chunk['start']
-  else:
-      # new chunk
-      adress_chunks.append(chunk.copy())
-      chunk['start'] = sensor['address']
-      chunk['count'] = sensor['count']
+    sensor = sensor_by_addr[a]
+    if (sensor['address']+sensor['count']) - (chunk['start'] + chunk['count']) < chunk_min_range:
+        # increase chunk
+        chunk['count'] = sensor['address']+sensor['count'] - chunk['start']
+    else:
+        # new chunk
+        adress_chunks.append(chunk.copy())
+        chunk['start'] = sensor['address']
+        chunk['count'] = sensor['count']
+
+    chunk['count'] += chunk_extra_range
+    while chunk['count'] > chunk_max_count:
+        nextchunk = { 'start': chunk['start'] + chunk_max_count, 'count': chunk['count'] - chunk_max_count }
+        chunk['count'] = chunk_max_count
+        adress_chunks.append(chunk.copy())
+        chunk = nextchunk
 adress_chunks.append(chunk.copy())
 
 #print('chunks:')
@@ -345,11 +380,19 @@ while linenbr < read_num_lines:
     today = dt.strftime("%Y%m%d")
     datetimestr = dt.strftime("%Y-%m-%d %H:%M:%S")
     data = read_regs(client)
+    if not connected:
+        sys.stdout.flush()
+        time.sleep(2)
+        exit(1)
+
     data['DateTime'] = { 'v': datetimestr, 'u':''}
 
     if prevday != today:
         # New day - start with header
         linenbr = 0
+        if prevday != '':
+          # Exit to get a new file from systemd
+          exit(0)
         prevday = today        
     print_data(data)
     if linenbr < read_num_lines:
