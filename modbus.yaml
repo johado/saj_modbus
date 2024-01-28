@@ -232,7 +232,7 @@
         slave: 0
         address: 16437
         count: 1
-        precision: 2
+        precision: 0
         scale: 0
         data_type: int16
         device_class: power
@@ -242,7 +242,7 @@
         slave: 0
         address: 16438
         count: 1
-        precision: 2
+        precision: 0
         scale: 0
         data_type: int16
         device_class: current
@@ -685,6 +685,7 @@
         data_type: int16
         device_class: power
         scan_interval: 1
+# This is what is bought from grid?
       - name: Gridtotalpower
         unit_of_measurement: "W"
         slave: 0
@@ -717,9 +718,10 @@
         device_class: power
         scan_interval: 1
 
-      - name: BatteryToGridtotalpowerFIXME
+      - name: InverterTotalGridpowerFIXME
       # 0x40A7 16551 This seems to be difference between Battery_power and Batterytotalpower, changed to 16551
       # 40A7H 1 TotalGridPowerWatt Int16 0 W R The total active power of the grid
+      # SHould rather be named
         unit_of_measurement: "W"
         slave: 0
         address: 16551
