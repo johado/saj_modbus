@@ -771,8 +771,8 @@
         slave: 0
         address: 16575 
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -782,8 +782,8 @@
         slave: 0
         address: 16577 
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -793,8 +793,8 @@
         slave: 0
         address: 16579 
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -804,8 +804,8 @@
         slave: 0
         address: 16581 
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -815,8 +815,8 @@
         slave: 0
         address: 16583
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -826,8 +826,8 @@
         slave: 0
         address: 16585
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -836,8 +836,8 @@
         slave: 0
         address: 16587
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -846,8 +846,8 @@
         slave: 0
         address: 16589
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -856,8 +856,8 @@
         slave: 0
         address: 16591
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -867,8 +867,8 @@
         slave: 0
         address: 16593
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -877,8 +877,8 @@
         slave: 0
         address: 16595
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -887,8 +887,8 @@
         slave: 0
         address: 16597
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -898,8 +898,8 @@
         slave: 0
         address: 16599
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -908,8 +908,8 @@
         slave: 0
         address: 16601
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -918,8 +918,8 @@
         slave: 0
         address: 16603
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -928,8 +928,8 @@
         slave: 0
         address: 16605
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -941,8 +941,8 @@
         slave: 0
         address: 16639
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -952,8 +952,8 @@
         slave: 0
         address: 16641
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -962,8 +962,8 @@
         slave: 0
         address: 16643
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -972,8 +972,8 @@
         slave: 0
         address: 16645
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -982,8 +982,8 @@
         slave: 0
         address: 16647
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -993,8 +993,8 @@
         slave: 0
         address: 16649
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1003,8 +1003,8 @@
         slave: 0
         address: 16651
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1013,8 +1013,8 @@
         slave: 0
         address: 16653
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -1023,8 +1023,8 @@
         slave: 0
         address: 16655
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1034,8 +1034,8 @@
         slave: 0
         address: 16657
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1044,8 +1044,8 @@
         slave: 0
         address: 16659
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1054,8 +1054,8 @@
         slave: 0
         address: 16661
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -1064,8 +1064,8 @@
         slave: 0
         address: 16607
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1075,8 +1075,8 @@
         slave: 0
         address: 16609
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1085,8 +1085,8 @@
         slave: 0
         address: 16611
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: uint32
         device_class: energy
         scan_interval: 100
@@ -1095,8 +1095,8 @@
         slave: 0
         address: 16613
         count: 2
-        precision: 0
-        scale: 0.01
+        precision: 2
+        scale: 1
         data_type: int32
         device_class: energy
         scan_interval: 100
@@ -1166,6 +1166,31 @@
 #        scan_interval: 100
 # I Tidsdelningsläge: Self consumption        
 # 13828: 15        
+      - name: C7-0enable
+        unit_of_measurement: "bits"
+        slave: 0
+        address: 13828
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D7-0enable
+        unit_of_measurement: "bits"
+        slave: 0
+        address: 13829
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
 # 13829: 7
 # when 
       - name: C0begin
@@ -1417,7 +1442,7 @@
         device_class: schedule
         scan_interval: 100
 
-      - name: D1begin
+      - name: D0begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13851
@@ -1429,7 +1454,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D1end
+      - name: D0end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13852
@@ -1441,7 +1466,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D1days_and_power
+      - name: D0days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13853
@@ -1452,7 +1477,7 @@
         device_class: schedule
         scan_interval: 100
 
-      - name: D2begin
+      - name: D1begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13854
@@ -1464,7 +1489,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D2end
+      - name: D1end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13855
@@ -1476,7 +1501,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D2days_and_power
+      - name: D1days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13856
@@ -1487,7 +1512,7 @@
         device_class: schedule
         scan_interval: 100
 
-      - name: D3begin
+      - name: D2begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13857
@@ -1499,7 +1524,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D3end
+      - name: D2end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13858
@@ -1511,7 +1536,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D3days_and_power
+      - name: D2days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13859
@@ -1522,7 +1547,7 @@
         device_class: schedule
         scan_interval: 100
 
-      - name: D4begin
+      - name: D3begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13860
@@ -1534,7 +1559,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D4end
+      - name: D3end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13861
@@ -1546,7 +1571,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D4days_and_power
+      - name: D3days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13862
@@ -1556,7 +1581,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D5begin
+      - name: D4begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13863
@@ -1568,7 +1593,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D5end
+      - name: D4end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13864
@@ -1580,7 +1605,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D5days_and_power
+      - name: D4days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13865
@@ -1590,7 +1615,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D6begin
+      - name: D5begin
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13866
@@ -1602,7 +1627,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D6end
+      - name: D5end
         unit_of_measurement: "0xHHMM"
         slave: 0
         address: 13867
@@ -1614,7 +1639,7 @@
         data_type: uint16
         device_class: schedule
         scan_interval: 100
-      - name: D6days_and_power
+      - name: D5days_and_power
         unit_of_measurement: "0xDFPC"
         slave: 0
         address: 13868
@@ -1625,6 +1650,42 @@
         device_class: schedule
         scan_interval: 100
 
+      - name: D6begin
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13869
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D6end
+        unit_of_measurement: "0xHHMM"
+        slave: 0
+        address: 13870
+        count: 1
+        precision: 0
+        # convert minutes to hour
+        #scale: 0.016666666
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+      - name: D6days_and_power
+        unit_of_measurement: "0xDFPC"
+        slave: 0
+        address: 13871
+        count: 1
+        precision: 0
+        scale: 1
+        data_type: uint16
+        device_class: schedule
+        scan_interval: 100
+
+# 13872-13883 Smartmeter and battery config
 
 #      - name: a0x3a03_14851
 #        #unit_of_measurement: "h.m"
@@ -2014,3 +2075,51 @@
         device_class: frequency
         scan_interval: 1
 
+# https://community.home-assistant.io/t/saj-solar-inverter/111932/223?page=10
+# Does not work on H2
+# 0x3354=13140 control battery charging?
+#      - name: BatChargeControl
+#        unit_of_measurement: "W"
+#        slave: 0
+#        address: 13140
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: uint16
+#        device_class: battery
+#        scan_interval: 1
+
+
+# From 2020 protocol document, does not work for my SAJ H2
+# 0x3271=12913
+#      - name: BatSetSOCRetain
+#        unit_of_measurement: "%"
+#        slave: 0
+#        address: 12913
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: uint16
+#        device_class: battery
+#        scan_interval: 1
+# 0x3273=12915
+#      - name: BatSetSOCHigh
+#        unit_of_measurement: "%"
+#        slave: 0
+#        address: 12915
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: uint16
+#        device_class: battery
+#        scan_interval: 1
+#      - name: BatSetSOCLow
+#        unit_of_measurement: "%"
+#        slave: 0
+#        address: 12916
+#        count: 1
+#        precision: 0
+#        scale: 1
+#        data_type: uint16
+#        device_class: battery
+#        scan_interval: 1

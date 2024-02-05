@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import time
 import sys
-
+import struct
 try:
   import yaml
 #  from pyyaml import yaml
@@ -30,6 +30,7 @@ include_class = []  # All
 print_values = False
 #print_values = True
 print_csv = True
+prev_csvheader = ''
 read_num_lines = int(24*60*60 / 10)
 
 parser = argparse.ArgumentParser()
@@ -191,6 +192,7 @@ def read_regs(client):
 linenbr = 0
 def print_data(data):
     global linenbr
+    global prev_csvheader
     units = ['W', 'V', 'A', 'kWh']
     sensor_by_unit = {}
     for u in units:
@@ -254,8 +256,10 @@ def print_data(data):
                 if not print_csv:
                     print(name, ' not in data?')
     if print_csv:
-        if linenbr == 0:
+        # Sometimes som values are missing, if so, resync CSV header
+        if linenbr == 0 or csvheader != prev_csvheader:
             print(csvheader)
+            prev_csvheader = csvheader
         print(csvvalue)
         linenbr += 1
 
@@ -405,15 +409,18 @@ if read_reg != '':
         for reg in regs:
             if reg in sensor_by_name:
                 sensor = sensor_by_name[reg]
-                chunk = {}
-                chunk['start'] = sensor['address']
-                chunk['count'] = sensor['count']
-                adress_chunks = [chunk]
-                data = read_regs(client)
-                for k in data:
-                    print(k, data[k]['v'], data[k]['u'])
             else:
-                print("# Register",reg,"not found")
+                print("# Register",reg,"not found, try as number")
+                sensor = {'address' : int(reg, 0), 'count': 1 }
+
+            chunk = {}
+            chunk['start'] = sensor['address']
+            chunk['count'] = sensor['count']
+            adress_chunks = [chunk]
+            data = read_regs(client)
+            for k in data:
+                print(k, data[k]['v'], data[k]['u'])
+
 
 if write_reg != '':
         regs = write_reg.split(',')
@@ -422,8 +429,18 @@ if write_reg != '':
             if reg in sensor_by_name:
                 sensor = sensor_by_name[reg]
                 value=int(value, base=0)
-                print("Write to", reg, value, sensor)
-                res =client.write_register(address = sensor['address'], value=value, unit = 1)
+                s = "Write to %s %i 0x%04x: %i 0x%08x" % ( reg, sensor['address'], sensor['address'], value, value)
+                print(s, sensor)
+                if sensor['data_type'] == 'uint32':
+                    #from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
+                    #builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Big)
+                    #builder.add_32bit_uint(value)
+                    #payload = builder.build()
+                    payload = struct.pack('>I', value)
+                    print('payload', payload)
+                    res = client.write_register(address = sensor['address'],value = payload, count=2,unit= 1,skip_encode = True)
+                else:
+                    res =client.write_register(address = sensor['address'], value=value, count=sensor['count'], unit = 1)
                 print(res)
                 #for k in data:
                 #    print(k, data[k]['v'], data[k]['u'])
