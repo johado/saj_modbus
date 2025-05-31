@@ -28,6 +28,8 @@ chunk_extra_range = 0
 exclude_class = ['schedule']
 include_class = []  # All
 print_values = False
+print_values2 = False
+print_hex = False
 #print_values = True
 print_csv = True
 prev_csvheader = ''
@@ -53,6 +55,8 @@ parser.add_argument('--read', help="Read register(s) (reg1,reg2)",
                     type=str, default='', required=False)
 parser.add_argument('--write', help="Write register(s) (reg=value,regs=value)",
                     type=str, default='', required=False)
+parser.add_argument('--hex', action='store_true', help="Print hex value when listing/reading sensors",
+                    default=False, required=False)
 
 
 args = parser.parse_args()
@@ -69,6 +73,7 @@ with open("modbus.yaml", "r") as stream:
 #        modbus = yaml.safe_load(stream)
 #    except yaml.YAMLError as exc:
 #        print(exc)
+print_hex = args.hex
 if args.include is not None:
     include_class = args.include.split(',')
 exclude_class = args.exclude.split(',')
@@ -94,6 +99,8 @@ for sensor in sensors:
     address = sensor['address']
     sensor_by_addr[address] = sensor
     sensor_by_name[sensor['name']] = sensor
+    if not ('device_class' in sensor):
+        sensor['device_class'] = ''
     if 'device_class' in sensor:
         sensor_classes[sensor['device_class']] = sensor['device_class']
 
@@ -154,17 +161,28 @@ def read_regs(client):
                         divideprecision -= 1
                         
                     if sensor['data_type'] == 'uint16':
-                        data[sensor['name']] = str(round(decoder.decode_16bit_uint() * scale, precision))
+                        rawvalue = int(decoder.decode_16bit_uint())
+                        data[sensor['name']] = str(round(rawvalue * scale, precision))
                     elif sensor['data_type'] == 'int16':
-                        data[sensor['name']] = str(round(decoder.decode_16bit_int() * scale, precision))
+                        rawvalue = decoder.decode_16bit_int()
+                        data[sensor['name']] = str(round(rawvalue * scale, precision))
                     elif sensor['data_type'] == 'uint32':
-                        data[sensor['name']] = str(round(decoder.decode_32bit_uint() * scale, precision))
+                        rawvalue = decoder.decode_32bit_uint()
+                        data[sensor['name']] = str(round(rawvalue * scale, precision))
                     elif sensor['data_type'] == 'int32':
-                        data[sensor['name']] = str(round(decoder.decode_32bit_int() * scale, precision))
+                        rawvalue = decoder.decode_32bit_int()
+                        data[sensor['name']] = str(round(rawvalue * scale, precision))
                     else:
                         print("data_type: ", sensor['data_type'], "not handled")
+                        rawvalue = 0xABADC0DE
 
                     value = data[sensor['name']]
+                    if sensor['count'] == 1:
+                        hexvalue = "0x%04X" % (rawvalue)
+                    elif sensor['count'] == 2:
+                        hexvalue = "0x%08X" % (rawvalue)
+                    else:
+                        hexvalue ='?'
                     unit = sensor['unit_of_measurement'] if 'unit_of_measurement' in sensor else ''
                     if unit == '0xHHMM':
                         value = int(value)
@@ -182,9 +200,9 @@ def read_regs(client):
                         value = int(value)
                         value = "%02i:%02i:%02i.%03i" % ( (value >> 24) & 0xFF, (value >> 16) & 0xFF, (value >> 8) & 255, value & 0xFF)
                         unit = ''
-                    data[sensor['name']] = { 'v': value, 'u':unit}
+                    data[sensor['name']] = { 'v': value, 'u':unit, 'h': hexvalue}
                     
-                    if print_values:
+                    if print_values2:
                         print(sensor['name'], value, unit)
                     address += sensor['count']
     return data
@@ -223,9 +241,12 @@ def print_data(data):
                     value = data[name]['v']
                     unit = data[name]['u']
                     
-                    if not ('device_class' in sensor) or 'device_class' in sensor and sensor['device_class'] in include_class:
+                    if 'device_class' in sensor and sensor['device_class'] in include_class:
                         if print_values:
-                            print(sensor['name'], value, unit) 
+                            if print_hex:
+                                print(sensor['name'], value, unit, data[name]['h'])
+                            else:
+                                print(sensor['name'], value, unit)
                         if unit != '':
                             csvheader += name + '['+unit+'];'
                         else:
@@ -245,8 +266,11 @@ def print_data(data):
 
                 if not ('device_class' in sensor) or 'device_class' in sensor and sensor['device_class'] in include_class:
                 #if sensor['device_class'] in include_class:
-                    if print_values:                
-                        print(sensor['name'], value, unit)                
+                    if print_values:
+                            if print_hex:
+                                print(sensor['name'], value, unit, data[name]['h'])
+                            else:
+                                print(sensor['name'], value, unit)
                     if unit != '':
                         csvheader += name + '['+unit+'];'
                     else:
@@ -261,7 +285,7 @@ def print_data(data):
             print(csvheader)
             prev_csvheader = csvheader
         print(csvvalue)
-        linenbr += 1
+    linenbr += 1
 
 """
 data1 = data.copy()
@@ -419,7 +443,10 @@ if read_reg != '':
             adress_chunks = [chunk]
             data = read_regs(client)
             for k in data:
-                print(k, data[k]['v'], data[k]['u'])
+                if print_hex:
+                    print(k, data[k]['v'], data[k]['u'], data[k]['h'])
+                else:
+                    print(k, data[k]['v'], data[k]['u'])
 
 
 if write_reg != '':
@@ -436,9 +463,14 @@ if write_reg != '':
                     #builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Big)
                     #builder.add_32bit_uint(value)
                     #payload = builder.build()
-                    payload = struct.pack('>I', value)
-                    print('payload', payload)
-                    res = client.write_register(address = sensor['address'],value = payload, count=2,unit= 1,skip_encode = True)
+                    #payload = struct.pack('>I', value)
+                    #print('payload', payload)
+                    print('payload: 0x%08X' % ( value))
+                    #res = client.write_register(address = sensor['address'],value = payload, count=2,unit= 1,skip_encode = True)
+                    res = client.write_registers(address = sensor['address'],
+                                                 #values = [ struct.pack('>H', (value >> 16) & 0xFFFF), struct.pack('>H', value & 0xFFFF)],
+                                                 values = [ (value >> 16) & 0xFFFF, value & 0xFFFF],
+                                                 count=2,unit= 1, skip_encode = False)
                 else:
                     res =client.write_register(address = sensor['address'], value=value, count=sensor['count'], unit = 1)
                 print(res)

@@ -1,24 +1,10 @@
 import argparse
-
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.constants import Endian
+import logging
+from pymodbus.client import ModbusTcpClient
 from pymodbus.exceptions import ConnectionException
-from pymodbus.payload import BinaryPayloadDecoder
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--host', help="SAJ Inverter IP",
-                    type=str, required=True)
-parser.add_argument('--port', help="SAJ Inverter Port",
-                    type=int, required=True)
-
-args = parser.parse_args()
-
-address = 0x0101  # First register with Inverter errors.
-count = 6  # Read this amount of registers
-connected = False
-client = ModbusTcpClient(host=args.host, port=args.port, timeout=3)
-client.connect()
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 FAULT_MESSAGES = {
     0: {
@@ -108,51 +94,58 @@ FAULT_MESSAGES = {
     },
 }
 
+def read_inverter_errors(client: ModbusTcpClient, address: int, count: int) -> list:
+    """Read inverter error registers and return the fault messages."""
+    try:
+        inverter_data = client.read_holding_registers(slave=1, address=address, count=count)
+        if inverter_data.isError():
+            raise ConnectionException("Error reading registers")
+    except ConnectionException as ex:
+        logging.error(f'Connecting to device failed: {ex}')
+        return []
+    return inverter_data.registers
 
-try:
-    inverter_data = client.read_holding_registers(
-        unit=1, address=address, count=count)
-    connected = True
-except ConnectionException as ex:
-    print(f'Connecting to device {args.host} failed!')
-    connected = False
+def parse_fault_messages(registers: list[int]) -> str:
+    """Parse the fault messages from the registers."""
+    faultMsg = []
+    faultMsg0 = registers[0] << 16 | registers[1]
+    faultMsg1 = registers[2] << 16 | registers[3]
+    faultMsg2 = registers[4] << 16 | registers[5]
 
-if connected:
-    if not inverter_data.isError():
-        decoder = BinaryPayloadDecoder.fromRegisters(
-            inverter_data.registers, byteorder=Endian.Big)
+    logging.info(f"faultMsg {faultMsg0:#010x} {faultMsg1:#010x} {faultMsg2:#010x}")
 
-        faultMsg0 = decoder.decode_32bit_uint()
-        faultMsg1 = decoder.decode_32bit_uint()
-        faultMsg2 = decoder.decode_32bit_uint()
-
-        print("faultMsg "
-              + "{0:#010x}".format(faultMsg0)
-              + " "
-              + "{0:#010x}".format(faultMsg1)
-              + " "
-              + "{0:#010x}".format(faultMsg2)
-              )
-
-        faultMsg = []
-        if faultMsg0:
-            for code, mesg in FAULT_MESSAGES[0].items():
-                if faultMsg0 & code:
-                    faultMsg.append(mesg)
-        if faultMsg1:
-            for code, mesg in FAULT_MESSAGES[1].items():
-                if faultMsg1 & code:
-                    faultMsg.append(mesg)
-        if faultMsg2:
-            for code, mesg in FAULT_MESSAGES[2].items():
-                if faultMsg2 & code:
+    for i, msg in enumerate([faultMsg0, faultMsg1, faultMsg2]):
+        if msg:
+            for code, mesg in FAULT_MESSAGES[i].items():
+                if msg & code:
                     faultMsg.append(mesg)
 
-        error = ", ".join(faultMsg)
+    return ", ".join(faultMsg)
 
-        if error:
-            print("Fault message: " + error)
+def main() -> None:
+    """Main function to read and display inverter error messages."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', help="SAJ Inverter IP", type=str, required=True)
+    parser.add_argument('--port', help="SAJ Inverter Port", type=int, required=True)
+    args = parser.parse_args()
+
+    client = ModbusTcpClient(host=args.host, port=args.port, timeout=3)
+    client.connect()
+
+    try:
+        registers = read_inverter_errors(client, address=0x0101, count=6)
+        if registers:
+            error = parse_fault_messages(registers)
+            if error:
+                logging.info(f"Fault message: {error}")
+                print(f"Fault message: {error}")
+            else:
+                logging.info("No faults")
+                print("No faults")
         else:
-            print("No faults")
+            logging.error("Failed to read inverter errors")
+    finally:
+        client.close()
 
-client.close()
+if __name__ == "__main__":
+    main()
