@@ -60,6 +60,7 @@
 #        data_type: uint16
 #        device_class: voltage
 #        scan_interval: 10
+q
 # Write only register:  0x8020 is actually 4 words according to 202221202 doc. 0xyyyyMMddHHmmss00
       - name: InverterDate2
         unit_of_measurement: "0xYYYYMMDD"
