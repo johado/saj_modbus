@@ -122,19 +122,27 @@ def getspot(daydelta = 0, days=0, startdate = '', enddate = '', area = 'SN4'):
     }
     url = "https://www.vattenfall.se/api/price/spot/pricearea/"+today+"/"+tomorrow+"/"+area # tomorrow
     #print("url:",url)
-    response = requests.get(url, headers=headers, params=None)
-    #print(response)
-    if response.status_code == 200 and response.content != '':
-        try:
-            spotprice = json.loads(response.content.decode('utf-8'))
-            with open(today+'_vattenfall.json', "w") as fp:
-                fp.write(response.content.decode('utf-8'))
-        except Exception as e:
-            print(e)
-            spotprice = []
-    else:
+    try:
+        response = requests.get(url, headers=headers, params=None)
         #print(response)
+        if response.status_code == 200 and response.content != '':
+            try:
+                spotprice = json.loads(response.content.decode('utf-8'))
+                with open(today+'_vattenfall.json', "w") as fp:
+                    fp.write(response.content.decode('utf-8'))
+            except Exception as e:
+                print(e)
+                spotprice = []
+        else:
+            #print(response)
+            spotprice = []
+            with open(today+'_vattenfall.json', "r") as fp:
+                spotprice = json.loads(fp.read())
+    except Exception as e:
         spotprice = []
+        with open(today+'_vattenfall.json', "r") as fp:
+            spotprice = json.loads(fp.read())
+
 
     i = 0
     # Trim down
@@ -558,7 +566,8 @@ def calc_gain(spotprice):
             bat_consume = rec['load[kWh]'] - rec['PV[kWh]']
             if bat_consume < 0:
                 bat_consume = 0
-            #bat_consume = rec['Bat[kWh]']
+            if bat_consume > rec['Bat[kWh]']:
+                bat_consume = rec['Bat[kWh]']
             bat_sell = rec['Bat[kWh]'] - bat_consume
             rec['Bat[kr]'] = round((bat_consume*spot['cost'])/100 + (bat_sell*spot['sell'])/100,1)
             rec['BatU[kr]'] = round((bat_consume*spot['cost'])/100,1)
@@ -574,8 +583,11 @@ def calc_gain(spotprice):
                 rec['Etot[kr]'] = 0
                 rec['Eout[kWh]'] = 0
                 rec['Eout[kr]'] = 0
-
+            rec['gain[kr]'] = round(rec['load[kr]'] - rec['Etot[kr]'] + rec['Eout[kr]'],2) 
+            rec['cost[kr]'] = round(rec['Etot[kr]'] - rec['Eout[kr]'],2)
+ 
             cost.append(rec)
+ 
             for f in rec:
                 if f != 'dt':
                     if f in costsum:
@@ -586,7 +598,7 @@ def calc_gain(spotprice):
 
 
     # Add last day entry
-    costsum['cost[kr]'] = round(costsum['Etot[kr]'] - costsum['Eout[kr]'],2)
+    #costsum['cost[kr]'] = round(costsum['Etot[kr]'] - costsum['Eout[kr]'],2)
     for f in costsum:
         if '[' in f:
             costsum[f] = round(costsum[f], 2)
@@ -627,7 +639,7 @@ def calc_gain(spotprice):
         ack_cost += rec['cost[kr]']
         ack_value += rec['load[kr]']
         #print(rec, round(ack_value - ack_cost, 2))
-        rec['gain[kr]'] = round(ack_value - ack_cost, 2)
+        #rec['gain[kr]'] = round(ack_value - ack_cost, 2)
 
         if first:
             fieldnbr = 0
