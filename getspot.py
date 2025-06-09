@@ -370,7 +370,7 @@ def get_sajdata(datestr):
         sajdata = ''            
     sajdata = sajdata.split("\n")
     headers = sajdata[0].split(';')
-    #SAJfields = sajdata[0].split(';') #Uncomment to explore more fields
+    SAJfields = sajdata[0].split(';') #Uncomment to explore more fields
     #print(sajdata[0])
     #print(sajdata[1])
     insync = False
@@ -506,17 +506,23 @@ def calc_gain(spotprice):
         #print(l)
         dt = l['dt']
         day = dt[0:10]
+
         if day != prevday:
-            print(day, end = "\r")
+            print(day, end = "        \b\b\b\b\b\b\b\b")
             sajdata = get_sajdata(day)
             prevday = day
+            print("s", end = "")
             sajsummary.update(sajdata)
             #for s in sajdata:
             #    sajsummary[s] = sajdata[s]
             meterdata = get_meterdata(day)
+            print("m", end = "")
             metersummary.update(meterdata)
+            print("", end = "\r")
             #for s in meterdata:
             #    metersummary[s] = meterdata[s]
+        else:
+            print(".", end = "")
   
     # Now summarize
     print("Summarize hours")
@@ -546,8 +552,8 @@ def calc_gain(spotprice):
         rec = {}
         if day_hh in sajsummary:
             rec = { 'dt':day_hh,
-                    'spot': spot['spot'],
-                    'cost': spot['cost'],
+                    #'spot': spot['spot'],
+                    #'cost': spot['cost'],
                     #'load[kWh]': sajsummary[day_hh]['Month_Totalload_energy[kWh]'],
                     #'load[kr]': round((sajsummary[day_hh]['Month_Totalload_energy[kWh]']*spot['cost'])/100,1),
                     #'PV[kWh]': sajsummary[day_hh]['Month_pvenergy[kWh]'],
@@ -585,7 +591,9 @@ def calc_gain(spotprice):
                 rec['Eout[kr]'] = 0
             rec['gain[kr]'] = round(rec['load[kr]'] - rec['Etot[kr]'] + rec['Eout[kr]'],2) 
             rec['cost[kr]'] = round(rec['Etot[kr]'] - rec['Eout[kr]'],2)
- 
+            # Sum of input and output should be closed to 0
+            rec['diff[kWh]'] = round(rec['Etot[kWh]'] + 0.9*rec['PV[kWh]'] - rec['load[kWh]'] - rec['Eout[kWh]'],3) 
+
             cost.append(rec)
  
             for f in rec:
